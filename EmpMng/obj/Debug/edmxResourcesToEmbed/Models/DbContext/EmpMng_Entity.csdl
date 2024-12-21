@@ -1,0 +1,169 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EmployeeManagmentModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="tblDepartment">
+    <Key>
+      <PropertyRef Name="DepartmentId" />
+    </Key>
+    <Property Name="DepartmentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DepartmentName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Budget" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="ManagerId" Type="Int32" />
+    <NavigationProperty Name="tblEmployee" Relationship="EmployeeManagmentModel.FK_tblDepartment_tblEmployee" FromRole="tblDepartment" ToRole="tblEmployee" />
+  </EntityType>
+  <EntityType Name="tblEmployee">
+    <Key>
+      <PropertyRef Name="EmployeeId" />
+    </Key>
+    <Property Name="EmployeeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="Position" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+    <Property Name="DepartmentId" Type="Int32" />
+    <Property Name="JoinDate" Type="DateTime" Precision="3" />
+    <Property Name="Status" Type="Boolean" />
+    <Property Name="Deleted" Type="Boolean" />
+    <NavigationProperty Name="tblPerformanceReviews" Relationship="Self.FK_tblPerformanceReview_tblEmployee" FromRole="tblEmployee" ToRole="tblPerformanceReview" />
+    <NavigationProperty Name="tblDepartments" Relationship="EmployeeManagmentModel.FK_tblDepartment_tblEmployee" FromRole="tblEmployee" ToRole="tblDepartment" />
+  </EntityType>
+  <EntityType Name="tblLogin">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="RoleId" Type="Int32" />
+    <NavigationProperty Name="tblRole" Relationship="Self.FK_tblLogin_tblRole" FromRole="tblLogin" ToRole="tblRole" />
+  </EntityType>
+  <EntityType Name="tblMainMenu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MainMenu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblSubMenus" Relationship="Self.FK_tblSubMenu_tblMainMenu" FromRole="tblMainMenu" ToRole="tblSubMenu" />
+  </EntityType>
+  <EntityType Name="tblPerformanceReview">
+    <Key>
+      <PropertyRef Name="PerformanceId" />
+    </Key>
+    <Property Name="PerformanceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EmployeeId" Type="Int32" />
+    <Property Name="ReviewDate" Type="DateTime" Precision="3" />
+    <Property Name="ReviewScore" Type="Decimal" Precision="10" Scale="2" />
+    <Property Name="ReviewNotes" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblEmployee" Relationship="Self.FK_tblPerformanceReview_tblEmployee" FromRole="tblPerformanceReview" ToRole="tblEmployee" />
+  </EntityType>
+  <EntityType Name="tblRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Roles" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="tblLogins" Relationship="Self.FK_tblLogin_tblRole" FromRole="tblRole" ToRole="tblLogin" />
+    <NavigationProperty Name="tblSubMenus" Relationship="Self.FK_tblSubMenu_tblRole" FromRole="tblRole" ToRole="tblSubMenu" />
+  </EntityType>
+  <EntityType Name="tblSubMenu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SubMenu" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Controller" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Action" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="MainMenuId" Type="Int32" />
+    <Property Name="RoleId" Type="Int32" />
+    <NavigationProperty Name="tblMainMenu" Relationship="Self.FK_tblSubMenu_tblMainMenu" FromRole="tblSubMenu" ToRole="tblMainMenu" />
+    <NavigationProperty Name="tblRole" Relationship="Self.FK_tblSubMenu_tblRole" FromRole="tblSubMenu" ToRole="tblRole" />
+  </EntityType>
+  <Association Name="FK_tblPerformanceReview_tblEmployee">
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="0..1" />
+    <End Role="tblPerformanceReview" Type="Self.tblPerformanceReview" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblEmployee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="tblPerformanceReview">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblLogin_tblRole">
+    <End Role="tblRole" Type="Self.tblRole" Multiplicity="0..1" />
+    <End Role="tblLogin" Type="Self.tblLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblRole">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblLogin">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblSubMenu_tblMainMenu">
+    <End Role="tblMainMenu" Type="Self.tblMainMenu" Multiplicity="0..1" />
+    <End Role="tblSubMenu" Type="Self.tblSubMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblMainMenu">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblSubMenu">
+        <PropertyRef Name="MainMenuId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblSubMenu_tblRole">
+    <End Role="tblRole" Type="Self.tblRole" Multiplicity="0..1" />
+    <End Role="tblSubMenu" Type="Self.tblSubMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblRole">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblSubMenu">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EmployeeManagmentEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="tblDepartments" EntityType="Self.tblDepartment" />
+    <EntitySet Name="tblEmployees" EntityType="Self.tblEmployee" />
+    <EntitySet Name="tblLogins" EntityType="Self.tblLogin" />
+    <EntitySet Name="tblMainMenus" EntityType="Self.tblMainMenu" />
+    <EntitySet Name="tblPerformanceReviews" EntityType="Self.tblPerformanceReview" />
+    <EntitySet Name="tblRoles" EntityType="Self.tblRole" />
+    <EntitySet Name="tblSubMenus" EntityType="Self.tblSubMenu" />
+    <AssociationSet Name="FK_tblPerformanceReview_tblEmployee" Association="Self.FK_tblPerformanceReview_tblEmployee">
+      <End Role="tblEmployee" EntitySet="tblEmployees" />
+      <End Role="tblPerformanceReview" EntitySet="tblPerformanceReviews" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblLogin_tblRole" Association="Self.FK_tblLogin_tblRole">
+      <End Role="tblRole" EntitySet="tblRoles" />
+      <End Role="tblLogin" EntitySet="tblLogins" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblSubMenu_tblMainMenu" Association="Self.FK_tblSubMenu_tblMainMenu">
+      <End Role="tblMainMenu" EntitySet="tblMainMenus" />
+      <End Role="tblSubMenu" EntitySet="tblSubMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblSubMenu_tblRole" Association="Self.FK_tblSubMenu_tblRole">
+      <End Role="tblRole" EntitySet="tblRoles" />
+      <End Role="tblSubMenu" EntitySet="tblSubMenus" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblDepartment_tblEmployee" Association="EmployeeManagmentModel.FK_tblDepartment_tblEmployee">
+      <End Role="tblEmployee" EntitySet="tblEmployees" />
+      <End Role="tblDepartment" EntitySet="tblDepartments" />
+    </AssociationSet>
+  </EntityContainer>
+  <Association Name="FK_tblDepartment_tblEmployee">
+    <End Type="EmployeeManagmentModel.tblEmployee" Role="tblEmployee" Multiplicity="0..1" />
+    <End Type="EmployeeManagmentModel.tblDepartment" Role="tblDepartment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblEmployee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="tblDepartment">
+        <PropertyRef Name="ManagerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

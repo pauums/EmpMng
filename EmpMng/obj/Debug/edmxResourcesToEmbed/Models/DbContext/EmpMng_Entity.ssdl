@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="EmployeeManagmentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="tblDepartment">
+    <Key>
+      <PropertyRef Name="DepartmentId" />
+    </Key>
+    <Property Name="DepartmentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DepartmentName" Type="nvarchar(max)" />
+    <Property Name="ManagerId" Type="int" />
+    <Property Name="Budget" Type="decimal" Precision="10" Scale="2" />
+  </EntityType>
+  <EntityType Name="tblEmployee">
+    <Key>
+      <PropertyRef Name="EmployeeId" />
+    </Key>
+    <Property Name="EmployeeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EmployeeName" Type="nvarchar(max)" />
+    <Property Name="Email" Type="nvarchar(max)" />
+    <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+    <Property Name="Position" Type="nvarchar" MaxLength="250" />
+    <Property Name="DepartmentId" Type="int" />
+    <Property Name="JoinDate" Type="datetime" />
+    <Property Name="Status" Type="bit" />
+    <Property Name="Deleted" Type="bit" />
+  </EntityType>
+  <EntityType Name="tblLogin">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserName" Type="nvarchar(max)" />
+    <Property Name="Password" Type="nvarchar(max)" />
+    <Property Name="RoleId" Type="int" />
+  </EntityType>
+  <EntityType Name="tblMainMenu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MainMenu" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="tblPerformanceReview">
+    <Key>
+      <PropertyRef Name="PerformanceId" />
+    </Key>
+    <Property Name="PerformanceId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EmployeeId" Type="int" />
+    <Property Name="ReviewDate" Type="datetime" />
+    <Property Name="ReviewScore" Type="decimal" Precision="10" Scale="2" />
+    <Property Name="ReviewNotes" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="tblRole">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Roles" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="tblSubMenu">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SubMenu" Type="nvarchar(max)" />
+    <Property Name="Controller" Type="nvarchar(max)" />
+    <Property Name="Action" Type="nvarchar(max)" />
+    <Property Name="MainMenuId" Type="int" />
+    <Property Name="RoleId" Type="int" />
+  </EntityType>
+  <Association Name="FK_tblDepartment_tblEmployee">
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="0..1" />
+    <End Role="tblDepartment" Type="Self.tblDepartment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblEmployee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="tblDepartment">
+        <PropertyRef Name="ManagerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblLogin_tblRole">
+    <End Role="tblRole" Type="Self.tblRole" Multiplicity="0..1" />
+    <End Role="tblLogin" Type="Self.tblLogin" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblRole">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblLogin">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblPerformanceReview_tblEmployee">
+    <End Role="tblEmployee" Type="Self.tblEmployee" Multiplicity="0..1" />
+    <End Role="tblPerformanceReview" Type="Self.tblPerformanceReview" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblEmployee">
+        <PropertyRef Name="EmployeeId" />
+      </Principal>
+      <Dependent Role="tblPerformanceReview">
+        <PropertyRef Name="EmployeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblSubMenu_tblMainMenu">
+    <End Role="tblMainMenu" Type="Self.tblMainMenu" Multiplicity="0..1" />
+    <End Role="tblSubMenu" Type="Self.tblSubMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblMainMenu">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblSubMenu">
+        <PropertyRef Name="MainMenuId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_tblSubMenu_tblRole">
+    <End Role="tblRole" Type="Self.tblRole" Multiplicity="0..1" />
+    <End Role="tblSubMenu" Type="Self.tblSubMenu" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="tblRole">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="tblSubMenu">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="EmployeeManagmentModelStoreContainer">
+    <EntitySet Name="tblDepartment" EntityType="Self.tblDepartment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblEmployee" EntityType="Self.tblEmployee" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblLogin" EntityType="Self.tblLogin" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblMainMenu" EntityType="Self.tblMainMenu" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblPerformanceReview" EntityType="Self.tblPerformanceReview" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblRole" EntityType="Self.tblRole" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="tblSubMenu" EntityType="Self.tblSubMenu" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_tblDepartment_tblEmployee" Association="Self.FK_tblDepartment_tblEmployee">
+      <End Role="tblEmployee" EntitySet="tblEmployee" />
+      <End Role="tblDepartment" EntitySet="tblDepartment" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblLogin_tblRole" Association="Self.FK_tblLogin_tblRole">
+      <End Role="tblRole" EntitySet="tblRole" />
+      <End Role="tblLogin" EntitySet="tblLogin" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblPerformanceReview_tblEmployee" Association="Self.FK_tblPerformanceReview_tblEmployee">
+      <End Role="tblEmployee" EntitySet="tblEmployee" />
+      <End Role="tblPerformanceReview" EntitySet="tblPerformanceReview" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblSubMenu_tblMainMenu" Association="Self.FK_tblSubMenu_tblMainMenu">
+      <End Role="tblMainMenu" EntitySet="tblMainMenu" />
+      <End Role="tblSubMenu" EntitySet="tblSubMenu" />
+    </AssociationSet>
+    <AssociationSet Name="FK_tblSubMenu_tblRole" Association="Self.FK_tblSubMenu_tblRole">
+      <End Role="tblRole" EntitySet="tblRole" />
+      <End Role="tblSubMenu" EntitySet="tblSubMenu" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
